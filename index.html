@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>wow</title>
+  <title>hihi</title>
   <style>
     html, body {
       margin: 0;
@@ -24,7 +24,9 @@
       border-radius: 30px;
       cursor: pointer;
       z-index: 2;
-      transition: top 0.2s, left 0.2s;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
     }
 
     #message {
@@ -60,36 +62,15 @@
     const button = document.getElementById("startButton");
     const message = document.getElementById("message");
     const msg = "aylabyu so much my lablab my everything,\nemel na tayo mwehehhe\nbuhatin na kita <33";
-    let dodgeCount = 0;
-    let allowClick = false;
 
     const canvas = document.getElementById("fireworksCanvas");
     const ctx = canvas.getContext("2d");
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
 
-    function moveButton() {
-      if (allowClick) return;
-
-      const x = Math.random() * (window.innerWidth - 150);
-      const y = Math.random() * (window.innerHeight - 60);
-      button.style.left = `${x}px`;
-      button.style.top = `${y}px`;
-
-      dodgeCount++;
-      if (dodgeCount >= 5) {
-        allowClick = true;
-        button.textContent = "Okay, click me for real 💘";
-      }
-    }
-
-    button.addEventListener("mouseover", moveButton);
-
     button.addEventListener("click", () => {
-      if (!allowClick) return;
-
+      document.body.style.backgroundColor = "#ff8c42"; // Orange
       button.style.display = "none";
-      document.body.style.backgroundColor = "#ff8c42"; // orange
       message.style.display = "block";
       typeMessage();
       startFireworks();
@@ -178,6 +159,7 @@
     }
 
     animate();
+
     window.addEventListener("resize", () => {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
