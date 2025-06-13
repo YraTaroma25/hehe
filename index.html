@@ -2,164 +2,161 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>wow</title>
+  <title>Surprise for Christian Dave</title>
   <style>
-    * {
+    html, body {
       margin: 0;
       padding: 0;
-      box-sizing: border-box;
-    }
-
-    body {
-      height: 100vh;
-      background: radial-gradient(circle, #2e003e 0%, #1b0031 100%);
+      background-color: black;
+      height: 100%;
       overflow: hidden;
-      font-family: 'Segoe UI', sans-serif;
-      color: #fff;
       display: flex;
-      flex-direction: column;
-      align-items: center;
       justify-content: center;
+      align-items: center;
+      font-family: 'Segoe UI', sans-serif;
+      color: white;
       text-align: center;
     }
 
-    h1 {
-      font-size: 2.5rem;
-      color: #ff85a2;
-      text-shadow: 0 0 10px #ff85a2;
-      margin-bottom: 30px;
-    }
-
-    button {
-      background: none;
-      border: 2px solid #ff85a2;
-      color: #ff85a2;
-      padding: 15px 40px;
-      border-radius: 50px;
-      font-size: 18px;
+    #startButton {
+      font-size: 20px;
+      padding: 15px 30px;
+      background: #fff;
+      color: #000;
+      border: none;
+      border-radius: 30px;
       cursor: pointer;
-      transition: all 0.3s ease;
-      box-shadow: 0 0 15px #ff85a277;
-    }
-
-    button:hover {
-      background: #ff85a2;
-      color: #1b0031;
-      box-shadow: 0 0 20px #ff85a2;
+      z-index: 2;
+      position: relative;
     }
 
     #message {
-      margin-top: 40px;
-      font-size: 28px;
+      font-size: 26px;
+      color: #ffccf9;
+      text-shadow: 0 0 10px #ff99cc;
+      max-width: 90%;
       white-space: pre-wrap;
-      text-shadow: 0 0 10px #ff94c2;
-      color: #ffe6f2;
-      max-width: 80%;
+      z-index: 2;
     }
 
     canvas {
-      position: fixed;
+      position: absolute;
       top: 0;
       left: 0;
-      z-index: -1;
-    }
-
-    .music-toggle {
-      margin-top: 20px;
-      font-size: 14px;
-      color: #ccc;
-      cursor: pointer;
-      text-decoration: underline;
+      z-index: 0;
+      pointer-events: none;
     }
   </style>
 </head>
 <body>
 
-  <h1>Click to Reveal Your Message 💖</h1>
-  <button onclick="typeMessage()">Reveal</button>
+  <button id="startButton">Click Me 💖</button>
   <div id="message"></div>
-  <div class="music-toggle" onclick="toggleMusic()">🎵 Toggle Music</div>
-
-  <audio id="bgm" loop>
-    <source src="https://cdn.pixabay.com/audio/2023/03/29/audio_8b2870d4b0.mp3" type="audio/mp3">
-  </audio>
-
-  <canvas id="hearts"></canvas>
+  <canvas id="fireworksCanvas"></canvas>
 
   <script>
-    const msg = "aylabyu so much my lablab my everything 💘\nemel na tayo\nbuhatin na kita <33";
-    let idx = 0;
+    const msg = "aylabyu so much my lablab my everything,\nemel na tayo mwehehhe\nbuhatin na kita <33";
+    const messageEl = document.getElementById("message");
+    const button = document.getElementById("startButton");
+
+    button.onclick = () => {
+      button.style.display = 'none';
+      typeMessage();
+      startFireworks();
+    };
 
     function typeMessage() {
-      idx = 0;
-      document.getElementById("message").textContent = "";
+      let index = 0;
       const interval = setInterval(() => {
-        if (idx < msg.length) {
-          document.getElementById("message").textContent += msg.charAt(idx);
-          idx++;
+        if (index < msg.length) {
+          messageEl.textContent += msg.charAt(index);
+          index++;
         } else {
           clearInterval(interval);
         }
-      }, 100);
+      }, 80);
     }
 
-    const canvas = document.getElementById('hearts');
-    const ctx = canvas.getContext('2d');
-    let hearts = [];
+    // Fireworks + Hearts Canvas
+    const canvas = document.getElementById("fireworksCanvas");
+    const ctx = canvas.getContext("2d");
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
 
-    function resizeCanvas() {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
+    const particles = [];
+
+    function random(min, max) {
+      return Math.random() * (max - min) + min;
     }
 
-    function createHeart() {
-      const x = Math.random() * canvas.width;
-      const y = canvas.height + Math.random() * 100;
-      const size = Math.random() * 5 + 2;
-      const speed = Math.random() * 1 + 0.5;
-      hearts.push({x, y, size, speed});
+    class Particle {
+      constructor(x, y, color, isHeart = false) {
+        this.x = x;
+        this.y = y;
+        this.size = random(2, 5);
+        this.speedX = random(-3, 3);
+        this.speedY = random(-3, 3);
+        this.color = color;
+        this.life = 100;
+        this.isHeart = isHeart;
+      }
+
+      update() {
+        this.x += this.speedX;
+        this.y += this.speedY;
+        this.life--;
+      }
+
+      draw() {
+        ctx.beginPath();
+        if (this.isHeart) {
+          ctx.font = "16px Arial";
+          ctx.fillStyle = this.color;
+          ctx.fillText("💖", this.x, this.y);
+        } else {
+          ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+          ctx.fillStyle = this.color;
+          ctx.fill();
+        }
+      }
     }
 
-    function drawHeart(x, y, size) {
-      ctx.save();
-      ctx.beginPath();
-      ctx.moveTo(x, y);
-      ctx.bezierCurveTo(x + size, y - size, x + size * 2, y + size, x, y + size * 2);
-      ctx.bezierCurveTo(x - size * 2, y + size, x - size, y - size, x, y);
-      ctx.fillStyle = "rgba(255, 105, 180, 0.6)";
-      ctx.fill();
-      ctx.restore();
-    }
+    function handleParticles() {
+      for (let i = 0; i < particles.length; i++) {
+        particles[i].update();
+        particles[i].draw();
 
-    function animateHearts() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      for (let i = 0; i < hearts.length; i++) {
-        let h = hearts[i];
-        drawHeart(h.x, h.y, h.size);
-        h.y -= h.speed;
-        if (h.y < -20) {
-          hearts.splice(i, 1);
+        if (particles[i].life <= 0) {
+          particles.splice(i, 1);
           i--;
         }
       }
-      if (hearts.length < 100) createHeart();
-      requestAnimationFrame(animateHearts);
     }
 
-    resizeCanvas();
-    window.addEventListener('resize', resizeCanvas);
-    animateHearts();
-
-    const music = document.getElementById("bgm");
-    let isPlaying = false;
-    function toggleMusic() {
-      if (isPlaying) {
-        music.pause();
-      } else {
-        music.play();
-      }
-      isPlaying = !isPlaying;
+    function animate() {
+      ctx.fillStyle = "rgba(0, 0, 0, 0.2)";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      handleParticles();
+      requestAnimationFrame(animate);
     }
+
+    function startFireworks() {
+      setInterval(() => {
+        const x = random(100, canvas.width - 100);
+        const y = random(100, canvas.height - 100);
+        for (let i = 0; i < 30; i++) {
+          const color = `hsl(${Math.random() * 360}, 100%, 70%)`;
+          const isHeart = Math.random() > 0.5;
+          particles.push(new Particle(x, y, color, isHeart));
+        }
+      }, 500);
+    }
+
+    animate();
+    window.addEventListener("resize", () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    });
   </script>
 
 </body>
