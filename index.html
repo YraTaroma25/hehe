@@ -2,16 +2,16 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>For Christian Dave</title>
+  <title>hehe</title>
   <style>
     html, body {
       margin: 0;
       padding: 0;
-      background-color: black;
+      background: black;
       height: 100%;
       overflow: hidden;
       font-family: 'Segoe UI', sans-serif;
-      transition: background-color 2s ease;
+      transition: background 2s ease;
     }
 
     #startButton {
@@ -24,9 +24,6 @@
       border-radius: 30px;
       cursor: pointer;
       z-index: 2;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
       transition: top 0.2s, left 0.2s;
     }
 
@@ -37,10 +34,9 @@
       white-space: pre-wrap;
       display: none;
       text-align: center;
-      position: absolute;
-      top: 60%;
-      left: 50%;
-      transform: translate(-50%, -50%);
+      position: relative;
+      top: 50%;
+      transform: translateY(-50%);
       z-index: 2;
       padding: 20px;
     }
@@ -64,15 +60,36 @@
     const button = document.getElementById("startButton");
     const message = document.getElementById("message");
     const msg = "aylabyu so much my lablab my everything,\nemel na tayo mwehehhe\nbuhatin na kita <33";
+    let dodgeCount = 0;
+    let allowClick = false;
 
     const canvas = document.getElementById("fireworksCanvas");
     const ctx = canvas.getContext("2d");
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
 
+    function moveButton() {
+      if (allowClick) return;
+
+      const x = Math.random() * (window.innerWidth - 150);
+      const y = Math.random() * (window.innerHeight - 60);
+      button.style.left = `${x}px`;
+      button.style.top = `${y}px`;
+
+      dodgeCount++;
+      if (dodgeCount >= 5) {
+        allowClick = true;
+        button.textContent = "Okay, click me for real 💘";
+      }
+    }
+
+    button.addEventListener("mouseover", moveButton);
+
     button.addEventListener("click", () => {
-      document.body.style.backgroundColor = "#ff8c42"; // Orange
+      if (!allowClick) return;
+
       button.style.display = "none";
+      document.body.style.backgroundColor = "#ff8c42"; // orange
       message.style.display = "block";
       typeMessage();
       startFireworks();
@@ -90,7 +107,7 @@
       }, 80);
     }
 
-    // Fireworks and heart particles
+    // Fireworks particles
     const particles = [];
 
     function random(min, max) {
@@ -161,7 +178,6 @@
     }
 
     animate();
-
     window.addEventListener("resize", () => {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
